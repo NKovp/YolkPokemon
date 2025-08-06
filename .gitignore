@@ -60,3 +60,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Yolk project
+/YolkPokemon/appsettings.Development.json

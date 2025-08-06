@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using YolkPokemon.Database;
+using YolkPokemon.Models;
 
 namespace YolkPokemon.Controllers
 {
@@ -12,22 +15,19 @@ namespace YolkPokemon.Controllers
         };
 
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly AppDbContext _dbContext;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, AppDbContext dbContext)
         {
             _logger = logger;
+            _dbContext = dbContext;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
+        [HttpGet]
+        public async Task<IActionResult> GetAllElements()
         {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
+            var elements = await _dbContext.Elements.ToListAsync();
+            return Ok(new { success = true, statusCode = 200, message = "All trainers", data = elements });
         }
     }
 }

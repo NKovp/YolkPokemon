@@ -17,6 +17,23 @@ namespace YolkPokemon.Controllers
             _dbContext = context;
         }
 
+
+        // Health check
+        [HttpGet("health")]
+        public IActionResult HealthCheck()
+        {
+            try
+            {
+                // Проверяем, доступна ли база
+                var canConnect = _dbContext.Database.CanConnect();
+                return Ok(new { status = "Healthy", db = canConnect });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { status = "Unhealthy", error = ex.Message });
+            }
+        }
+
         /// <summary>
         /// Adds a new pokemon to the specified trainer.
         /// </summary>

@@ -17,6 +17,11 @@ namespace YolkPokemon.Controllers
             _dbContext = dbContext;
         }
 
+        /// <summary>
+        /// Creates a new trainer with pokemon list.
+        /// </summary>
+        /// <param name="dto">Trainer details</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> CreateTrainer([FromBody] CreateTrainerDto dto)
         {
@@ -42,6 +47,7 @@ namespace YolkPokemon.Controllers
                 Losses = 0
             };
 
+            // If pokemons are provided, create relationships
             if (dto.PokemonIds != null && dto.PokemonIds.Any())
             {
                 var pokemons = await _dbContext.Pokemons
@@ -77,6 +83,12 @@ namespace YolkPokemon.Controllers
             return Ok(new { success = true, statusCode = 200, message = "Trainer found", data = trainer });
         }
 
+        /// <summary>
+        /// Update an existing trainer's details.
+        /// </summary>
+        /// <param name="id">Trainer Id</param>
+        /// <param name="dto">Trainer DTO</param>
+        /// <returns></returns>
         [HttpPatch("{id}")]
         public async Task<IActionResult> UpdateTrainer(int id, [FromBody] UpdateTrainerDto dto)
         {

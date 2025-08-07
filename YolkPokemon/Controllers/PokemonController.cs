@@ -17,6 +17,12 @@ namespace YolkPokemon.Controllers
             _dbContext = context;
         }
 
+        /// <summary>
+        /// Adds a new pokemon to the specified trainer.
+        /// </summary>
+        /// <param name="trainerId"></param>
+        /// <param name="dto">New Pokemon</param>
+        /// <returns></returns>
         [HttpPost("trainers/{trainerId}/pokemon")]
         public async Task<IActionResult> AddPokemon(int trainerId, [FromBody] PokemonDto dto)
         {
@@ -41,6 +47,12 @@ namespace YolkPokemon.Controllers
             return Ok(new { success = true, statusCode = 200, message = "Pokemon added", data = pokemon });
         }
 
+        /// <summary>
+        /// Add an existing pokemon to specified trainer
+        /// </summary>
+        /// <param name="trainerId"></param>
+        /// <param name="pokemonId"></param>
+        /// <returns></returns>
         [HttpPost("trainers/{trainerId}/pokemon/{pokemonId}")]
         public async Task<IActionResult> AddPokemonById(int trainerId, int pokemonId)
         {
@@ -65,6 +77,15 @@ namespace YolkPokemon.Controllers
             return Ok(new { success = true, statusCode = 200, message = "All pokemons", data = pokemons });
         }
 
+        /// <summary>
+        /// Search pokemons by criteria
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="typeId"></param>
+        /// <param name="minLevel"></param>
+        /// <param name="maxLevel"></param>
+        /// <param name="trainerRegion"></param>
+        /// <returns></returns>
         [HttpGet("pokemon/search")]
         public async Task<IActionResult> SearchPokemon(
             [FromQuery] string? name,

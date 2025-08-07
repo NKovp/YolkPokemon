@@ -6,6 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Add EF Core and PostgreSQL support
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
+Console.WriteLine($"Connection string: {connectionString}");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 

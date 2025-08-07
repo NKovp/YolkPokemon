@@ -24,7 +24,7 @@ namespace YolkPokemon.Controllers
         {
             try
             {
-                // Проверяем, доступна ли база
+                // Check database connection
                 var canConnect = _dbContext.Database.CanConnect();
                 return Ok(new { status = "Healthy", db = canConnect });
             }

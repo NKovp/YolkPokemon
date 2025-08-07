@@ -61,8 +61,49 @@ namespace YolkPokemon.Controllers
         [HttpGet("pokemon")]
         public async Task<IActionResult> GetAllPokemon()
         {
-            var pokemons = await _dbContext.Pokemons.Include(p => p.Owner).ToListAsync();
+            var pokemons = await _dbContext.Pokemons.ToListAsync();
             return Ok(new { success = true, statusCode = 200, message = "All pokemons", data = pokemons });
+        }
+
+        [HttpGet("pokemon/search")]
+        public async Task<IActionResult> SearchPokemon(
+            [FromQuery] string? name,
+            [FromQuery] int? typeId,
+            [FromQuery] int? minLevel,
+            [FromQuery] int? maxLevel,
+            [FromQuery] string? trainerRegion)
+        {
+            var query = _dbContext.Pokemons
+                .Include(p => p.Type)
+                .Include(p => p.Owner)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(name))
+                query = query.Where(p => EF.Functions.ILike(p.Name, $"%{name}%"));
+
+            if (typeId.HasValue)
+                query = query.Where(p => p.TypeId == typeId);
+
+            if (minLevel.HasValue)
+                query = query.Where(p => p.Level >= minLevel);
+
+            if (maxLevel.HasValue)
+                query = query.Where(p => p.Level <= maxLevel);
+
+            if (!string.IsNullOrEmpty(trainerRegion))
+                query = query.Where(p => p.Owner!.Region == trainerRegion);
+
+            var total = await query.CountAsync();
+
+            var pokemons = await query.ToListAsync();
+
+            return Ok(new
+            {
+                success = true,
+                statusCode = 200,
+                message = $"Total pokemons found: {total}",
+                data = pokemons
+            });
         }
     }
 }

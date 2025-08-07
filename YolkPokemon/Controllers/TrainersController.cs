@@ -20,6 +20,18 @@ namespace YolkPokemon.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateTrainer([FromBody] CreateTrainerDto dto)
         {
+            // Validate required data
+            if (dto == null || string.IsNullOrEmpty(dto.Name))
+            {
+                return BadRequest(new
+                {
+                    success = false,
+                    statusCode = 400,
+                    message = "Data is invalid!"
+                });
+            }
+
+            // Create trainer
             var trainer = new Trainer
             {
                 Name = dto.Name,
@@ -29,7 +41,6 @@ namespace YolkPokemon.Controllers
                 Wins = 0,
                 Losses = 0
             };
-
 
             if (dto.PokemonIds != null && dto.PokemonIds.Any())
             {
